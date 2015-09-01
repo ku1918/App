@@ -14,8 +14,8 @@ if(isset($_POST['submit']))
  if(mysql_query("INSERT INTO users(username,fullname,email,phoneNumber,category,password) VALUES('$username','$fullname','$email','$phoneNumber','$category','$password')"))
  {
   ?>
-        <script>alert('successfully registered ');</script>
         <?php
+	header('Location: registerSuccess.html');
  }
  else
  {
@@ -35,6 +35,47 @@ if(isset($_POST['submit']))
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <!-- styles -->
 <link href="css/styles.css" rel="stylesheet">
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js"></script>
+<script>
+$(document).ready(function(){
+$('#username').keyup(username_check);
+});
+
+function username_check(){
+var username = $('#username').val();
+if(username == ""){
+$('#username').css('border', '3px #CCC solid');
+$('#tick').hide();
+}else{
+
+jQuery.ajax({
+   type: "POST",
+   url: "check/check.php",
+   data: 'username='+ username,
+   cache: false,
+   success: function(response){
+if(response == 1){
+        $('#username').css('border', '3px #C33 solid');
+        $('#tick').hide();
+        $('#cross').fadeIn();
+	$('#inform').text("The username has been taken.Please use another.");
+        }else{
+        $('#username').css('border', '3px #090 solid');
+        $('#cross').hide();
+        $('#tick').fadeIn();
+	$('#inform').text("The username is avalable");
+             }
+
+}
+});
+}
+
+
+
+}
+
+</script>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -64,10 +105,13 @@ if(isset($_POST['submit']))
 			<div class="box">
 			    <div class="content-wrap">
 				<h6>Sign Up</h6>
-		<form method="post" action"..." onsubmit="return checkForm(this);">
+		<form method="post">
 		<div>
-			<input type="text" class="form-control" placeholder="Username" required="" id="username" name="username" />
+			<input type="text" class="form-control" placeholder="Username" required="" id="username" name="username" >
+<!--<img id="tick" src="check/tick.png" width="16" height="16"/>
+<img id="cross" src="check/cross.png" width="16" height="16"/> -->
 		</div>
+
 		<div>
 			<input type="text" class="form-control" placeholder="Full Name" required="" id="fullname" name="fullname"/>
 		</div>
@@ -91,24 +135,24 @@ if(isset($_POST['submit']))
 				<option value="3">Player</option>
 			</select>
 		</div>
+		<div id="inform"></div>
 			<!--        <input class="form-control" type="text" placeholder="E-mail address">
 				<input class="form-control" type="password" placeholder="Password">
 				<input class="form-control" type="password" placeholder="Confirm Password"> -->
 				<div class="action">
 				    <input class="btn btn-primary signup" type="submit" value="Sign Up" name="submit" >
 				</div>                
+		</form>
 			    </div>
-			</div>
-
 			<div class="already">
 			    <p>Have an account already?</p>
 			    <a href="login.php">Login</a>
 			        </div>
+			</div>
 			    </div>
 			</div>
 		</div>
 	</div>
-		</form>
 
 
 
